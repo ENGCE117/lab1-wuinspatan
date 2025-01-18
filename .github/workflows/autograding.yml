@@ -17,37 +17,42 @@ jobs:
 
       # Step 3: Compile student code
       - name: Compile student code
-        run: gcc -o student_program student_program.cpp
+        run: |
+          g++ -o student_program student_program.cpp
+          if [ $? -ne 0 ]; then
+            echo "Compilation failed. Exiting..."
+            exit 1
+          fi
 
-      # Step 4-13: Run Test Cases 1-10 and Calculate Percentage
+      # Step 4: Run and Compare Test Cases (Exact Match)
       - name: Run and Compare Test Cases
         run: |
           total_testcases=0
           passed_testcases=0
           
           for i in $(seq 1 10); do
-            if [ -f testcases/input${i}.dat ]; then
-              # Increment total test cases count
+            input_file="testcases/input${i}.dat"
+            expected_output_file="testcases/output${i}.dat"
+            actual_output_file="output${i}.txt"
+            
+            if [ -f "$input_file" ]; then
               total_testcases=$((total_testcases+1))
               
-              # Run Test Case
-              ./student_program < testcases/input${i}.dat > output${i}.txt
+              # Run the student program
+              ./student_program < "$input_file" > "$actual_output_file"
               
-              # Compare Test Case
-              if [ -f testcases/output${i}.dat ]; then
-                if grep -Fq "$(cat testcases/output${i}.dat)" output${i}.txt; then
-                  # Print passed test case in green
+              if [ -f "$expected_output_file" ]; then
+                # Compare using diff for exact match
+                if diff -q "$expected_output_file" "$actual_output_file" > /dev/null; then
                   echo -e "\033[0;32mTest Case ${i} Passed\033[0m"
                   passed_testcases=$((passed_testcases+1))
                 else
-                  # Print failed test case in red
                   echo -e "\033[0;31mTest Case ${i} Failed\033[0m"
-                  # Show differences between expected and actual output
                   echo -e "\033[0;31mDifferences:\033[0m"
-                  diff testcases/output${i}.dat output${i}.txt || true
+                  diff "$expected_output_file" "$actual_output_file" || true
                 fi
               else
-                echo "Test Case ${i} skipped (no output file found)."
+                echo "Test Case ${i} skipped (no expected output file found)."
               fi
             else
               echo "Test Case ${i} skipped (no input file found)."
@@ -66,7 +71,7 @@ jobs:
           echo "Score Percentage: $score%"
           echo "SCORE=$score" >> $GITHUB_ENV
 
-      # Step 14: Extract student info
+      # Step 5: Extract student info from file
       - name: Extract student info
         id: student_info
         run: |
@@ -75,15 +80,15 @@ jobs:
           echo "SUBJECT_ID=${subject_id}" >> $GITHUB_ENV
           echo "TERM=${term}" >> $GITHUB_ENV
 
-      # Step 15: Extract lab_id from github_repo
+      # Step 6: Extract lab_id from github_repo
       - name: Extract lab_id from github_repo
         id: extract_lab_id
         run: |
           LAB_ID=$(echo "${{ github.repository }}" | awk -F'/' '{print $2}' | awk -F'-' '{print $1}')
           echo "LAB_ID=$LAB_ID" >> $GITHUB_ENV
 
-      # Step 16: Send results to the website
-      - name: Records results
+      # Step 7: Record results to the website
+      - name: Record results
         if: ${{ success() }}  # Runs only if all previous steps succeeded
         run: |
           TIMESTAMP=$(TZ='Asia/Bangkok' date +"%Y-%m-%dT%H:%M:%S%z")
@@ -99,4 +104,3 @@ jobs:
             "score": "${{ env.SCORE }}"
           }' \
           https://www.thailandfxwarrior.com/get_student_info.php
-
