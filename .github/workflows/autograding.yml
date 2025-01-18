@@ -17,7 +17,7 @@ jobs:
 
       # Step 3: Compile student code
       - name: Compile student code
-        run: gcc -o student_program student_program.c
+        run: gcc -o student_program student_program.cpp
 
       # Step 4-13: Run Test Cases 1-10 and Calculate Percentage
       - name: Run and Compare Test Cases
