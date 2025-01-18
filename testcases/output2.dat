@@ -1,1 +1,17 @@
-0 1 2 3
+Print Matrix, size 3 x 3
+0 0 0 
+0 0 0 
+0 0 0 
+
+Enter Row & Col : 
+Print Matrix, size 3 x 3
+0 0 0 
+0 0 0 
+0 0 0 
+
+Enter Row & Col : 
+Row = 3, Col = 3
+Print Matrix, size 3 x 3
+0 1 2 
+1 2 3 
+2 3 4 
