@@ -1,28 +1,27 @@
-## โจทย์
-เขียนคำสั่งในการสร้างและเรียกใช้ฟังก์ชัน GetMatrix() เพื่อรับจำนวนแถว คอลัมน์ และค่าของแต่ละสมาชิกในเมทริกซ์จากคีย์บอร์ดตามโปรโตไทป์ต่อไปนี้
-
 ## ข้อบังคับ
 1. ต้องกรอกรายละเอียดของตนเองในไฟล์ `student_info.txt` โดยมีข้อมูลสำคัญที่ต้องกรอกคือ
    - รหัสนักศึกษา เช่น 678888888-8
    - รหัสวิชา เช่น ENGCE117
    - เทอมที่เรียน เช่น 2/2567
-2. ต้องสร้างไฟล์ชื่อ `student_program.cpp` และทำการเขียนโค้ดโปรแกรมของนักศึกษาลงไปในไฟล์นี้
+2. นักศึกษาต้องทำการเขียนโค้ดโปรแกรมที่ไฟล์ `student_program.cpp` 
+
+## โจทย์
+จงเขียนรายละเอียดของฟังก์ชันจาก Prototype ต่อไปนี้
+- ฟังก์ชัน GetMatrix เพื่อรับค่าจากผู้ใช้ 2 ค่า เพื่อทำการกำหนดค่าภายใน Matrix 2 มิติ และรับค่าจากผู้ใช้เพื่อกำหนดค่าภายใน Matrix
+- ฟังก์ชัน PrintMatrix เพื่อแสดงค่าทั้งหมดที่อยู่ภายใน Matrix
 
 ## FIX CODE
 ```c++
 #include <stdio.h>
 
-void GetMatrix( int value[], int *row, int *col ) ;
+void GetMatrix( int **value, int *row, int *col ) ;
+void PrintMatrix( int **value, int row, int col ) ;
 
 int main() {
-    int *data, m, n ;
+    int *data, m = 3, n = 3 ;
+    data = new int[ m * n ] ;
     GetMatrix( &data, &m, &n ) ;
-    for( int i = 0 ; i < m ; i++ ) {
-      for( int j = 0 ; j < n ; j++ ) {
-          printf( "%d ", data[i][j] ) ;
-      }
-      printf( "\n" ) ;
-    }
+    PrintMatrix( &data, m, n ) ;
     return 0 ;
 }//end function
 ```
@@ -30,28 +29,13 @@ int main() {
 ## TEST CASE 1
 ### Input
 ```bash
-Enter the number of rows: 2
-Enter the number of columns: 3
-Enter the matrix elements: 1 2 3 4 5 6
+2 3
+7 6 8
+1 9 4
 ```
 ### Output
 ```bash
 Matrix (2x3):
-1 2 3
-4 5 6
-```
-
-## TEST CASE 2
-### Input
-```bash
-Enter the number of rows: 3
-Enter the number of columns: 2
-Enter the matrix elements: 7 8 9 10 11 12
-```
-### Output
-```bash
-Matrix (3x2):
-7 8
-9 10
-11 12
+7 6 8
+1 9 4
 ```
